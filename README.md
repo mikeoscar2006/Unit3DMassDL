@@ -39,3 +39,9 @@ optional arguments:
   ```python3
   python dl.py -ak APIKEY --alive
   ```
+
+## WARNING
+This can really cause trouble for your account if not used properly. Ask for permission and set the `-bpt` and `-btt` parameters accordingly to show a little decency towards the beloved tracker :)
+
+## API Key
+You can get your API Key by going to `My Settings > Security (Tab) > API Token (sub-tab)`
