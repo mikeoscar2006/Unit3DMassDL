@@ -8,6 +8,12 @@ from tqdm import tqdm
 from time import sleep
 
 
+def sanitize(file_name: str) -> str:
+    for char in '\\/\"\' ':
+        file_name = file_name.replace(char, '')
+    return file_name
+
+
 parser = argparse.ArgumentParser()
 
 parser.add_argument('-ak', '--api-key', type=str, help="API Key from the tracker", required=True)
@@ -43,17 +49,21 @@ while curr_page < last_page:
 
         download_link = attributes.get('download_link', '')
         if download_link:
-            resp = requests.get(download_link)
-            if resp.status_code != 200:
+            try:
+                resp = requests.get(download_link)
+                if resp.status_code != 200:
+                    continue
+
+                content_disp = resp.headers['content-disposition']
+                file_name = re.findall('filename=\"(.+)\"', content_disp)[0]
+                file_name = sanitize(file_name)
+                download_path = os.path.join(args.ad_save_dir, file_name)
+                with open(download_path, 'wb') as fp:
+                    fp.write(resp.content)
+            except Exception:
                 continue
-
-            content_disp = resp.headers['content-disposition']
-            file_name = re.findall('filename=\"(.+)\"', content_disp)[0]
-
-            download_path = os.path.join(args.ad_save_dir, file_name)
-            with open(download_path, 'wb') as fp:
-                fp.write(resp.content)
-            sleep(args.breathing_torr_time)
+            finally:
+                sleep(args.breathing_torr_time)
 
     if curr_page == args.starting_page:
         if args.ending_page == -1:
