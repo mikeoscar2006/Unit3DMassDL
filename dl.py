@@ -53,7 +53,7 @@ while curr_page < last_page:
             download_path = os.path.join(args.ad_save_dir, file_name)
             with open(download_path, 'wb') as fp:
                 fp.write(resp.content)
-            sleep(args.breating_torr_time)
+            sleep(args.breathing_torr_time)
 
     if curr_page == args.starting_page:
         if args.ending_page == -1:
