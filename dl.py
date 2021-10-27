@@ -9,7 +9,7 @@ from time import sleep
 
 
 def sanitize(file_name: str) -> str:
-    for char in '\\/\"\' ':
+    for char in '\\/\"\' :':
         file_name = file_name.replace(char, '')
     return file_name
 
@@ -57,7 +57,11 @@ while curr_page < last_page:
                 content_disp = resp.headers['content-disposition']
                 file_name = re.findall('filename=\"(.+)\"', content_disp)[0]
                 file_name = sanitize(file_name)
+
                 download_path = os.path.join(args.ad_save_dir, file_name)
+                if not download_path.endswith('.torrent'):
+                    continue
+
                 with open(download_path, 'wb') as fp:
                     fp.write(resp.content)
             except Exception:
